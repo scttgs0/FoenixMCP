@@ -111,7 +111,7 @@ extern int32_t syscall(int32_t function, ...);
  * Inputs:
  * result = the code to return to the kernel
  */
-extern void sys_exit(int result);
+extern void sys_exit(short result);
 
 /*
  * Enable all interrupts

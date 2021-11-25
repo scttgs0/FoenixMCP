@@ -271,7 +271,7 @@ short sys_chan_close(short chan) {
  * Inputs:
  * screen = the screen number 0 for channel A, 1 for channel B
  */
-void sys_text_setsizes(short chan) {
+short sys_text_setsizes(short chan) {
     return syscall(KFN_TEXT_SETSIZES, chan);
 }
 
@@ -467,7 +467,7 @@ short sys_fsys_findnext(short dir, p_file_info file) {
  * path = path to the drive
  * label = buffer that will hold the label... should be at least 35 bytes
  */
-short sys_fsys_get_label(char * path, char * label) {
+short sys_fsys_get_label(const char * path, char * label) {
     return (short)syscall(KFN_GET_LABEL, path, label);
 }
 
@@ -600,7 +600,7 @@ short sys_fsys_register_loader(const char * extension, p_file_loader loader) {
  * Returns:
  * the number of jiffies since the last reset
  */
-extern long sys_time_jiffies() {
+long sys_time_jiffies() {
     return syscall(KFN_TIME_JIFFIES);
 }
 

@@ -2,10 +2,12 @@
  * Definitions for the PS/2 interface devices... mouse and keyboard
  */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "errors.h"
 #include "log.h"
+#include "simpleio.h"
 #include "types.h"
 #include "ring_buffer.h"
 #include "interrupt.h"
@@ -14,6 +16,7 @@
 #include "dev/rtc.h"
 #include "dev/text_screen_iii.h"
 #include "rsrc/bitmaps/mouse_pointer.h"
+
 
 #define PS2_TIMEOUT_JF          10          /* Timeout in jiffies: 1/60 second units */
 #define PS2_RESEND_MAX          50          /* Number of times we'll repeat a command on receiving a 0xFE reply */
@@ -72,14 +75,14 @@ struct s_ps2_kbd {
 
     /* Scan code to character lookup tables */
 
-    char * keys_unmodified;
-    char * keys_shift;
-    char * keys_control;
-    char * keys_control_shift;
-    char * keys_caps;
-    char * keys_caps_shift;
-    char * keys_r_alt;
-    char * keys_r_alt_shift;
+    char const * keys_unmodified;
+    char const * keys_shift;
+    char const * keys_control;
+    char const * keys_control_shift;
+    char const * keys_caps;
+    char const * keys_caps_shift;
+    char const * keys_r_alt;
+    char const * keys_r_alt_shift;
 
     char * translation_table;
 };

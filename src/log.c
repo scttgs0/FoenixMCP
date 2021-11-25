@@ -2,9 +2,11 @@
  * A logging utility
  */
 
+#include <stdio.h>
 #include <string.h>
 #include "log.h"
 #include "simpleio.h"
+#include "syscalls.h"
 #include "dev/text_screen_iii.h"
 
 static short log_channel = 0;
@@ -95,7 +97,7 @@ void err_print(short channel, const char * message, short err_number) {
 /*
  * Display a panic screen
  */
-void panic() {
+void panic(void) {
     char buffer[80];
     short column = 18;
     short row = 10;

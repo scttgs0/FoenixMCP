@@ -3,6 +3,7 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "sys_general.h"
 #include "simpleio.h"
@@ -101,7 +102,7 @@ void load_splashscreen() {
     long target_ticks;
     int i;
     unsigned char * pixels;
-    unsigned char * vram = VRAM_Bank0;
+    volatile unsigned char * vram = VRAM_Bank0;
 
     /* Turn off the screen */
     *MasterControlReg_A = VKY3_MCR_BLANK_EN;

@@ -8,6 +8,8 @@
 #include "snd/psg.h"
 #include "snd/opl2.h"
 #include "dev/midi.h"
+#include "syscalls.h"
+
 
 /*
  * Play a sound on the PSG

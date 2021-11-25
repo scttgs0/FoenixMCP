@@ -58,6 +58,7 @@ extern void ansi_el(p_channel chan, short arg_count, short args[]);
 extern void ansi_ich(p_channel chan, short arg_count, short args[]);
 extern void ansi_dch(p_channel chan, short arg_count, short args[]);
 extern void ansi_sgr(p_channel chan, short arg_count, short args[]);
+short con_flush(p_channel chan);
 
 /*
  * Console variables and constants

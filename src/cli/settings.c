@@ -6,8 +6,10 @@
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
+#include "cli.h"
 #include "log.h"
 #include "errors.h"
 #include "settings.h"
@@ -73,7 +75,8 @@ short cli_set_register(const char * name, const char * help, cli_setter setter, 
     } else {
         /* Set the fields for the setting */
         cli_name_upper(setting->name, name);
-        strncpy(setting->help, help);
+        strncpy(setting->help, help, MAX_SETTING_HELP-1);
+        setting->help[MAX_SETTING_HELP-1] = '\0';
         setting->setter = setter;
         setting->getter = getter;
         setting->next = 0;
@@ -181,8 +184,6 @@ void cli_set_help(short channel) {
         sys_chan_write(channel, setting->help, strlen(setting->help));
         sys_chan_write(channel, "\n", 1);
     }
-
-    return 0;
 }
 
 /*
@@ -201,7 +202,7 @@ short cli_cmd_set(short channel, int argc, char * argv[]) {
         }
         return result;
 
-    } else if ((argc == 2) && ((strcmp(argv[1], "HELP") == 0) || (strcmp(argv[1], "help") == 0) || (strcmp(argv[1], "?") == 0)) {
+    } else if ((argc == 2) && ((strcmp(argv[1], "HELP") == 0) || (strcmp(argv[1], "help") == 0) || (strcmp(argv[1], "?") == 0))) {
         cli_set_help(channel);
 
     } else {
