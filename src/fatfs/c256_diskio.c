@@ -76,7 +76,7 @@ DRESULT disk_read (
 	for (i = 0; i < count; i++) {
 		result = bdev_read(pdrv, sector, buff, 512);
 		if (result < 0) {
-			log_num(LOG_ERROR, "disk_read error: ", result);
+			logm_num(LOG_ERROR, "disk_read error: ", result);
 			return RES_PARERR;
 		} else {
 			sector++;

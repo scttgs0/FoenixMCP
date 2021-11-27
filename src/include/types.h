@@ -6,16 +6,12 @@
 #define __TYPES_H
 
 #include <stdint.h>
+#include "stdbool.h"
 
 /*
  * Function types
  */
 
-/*
- * Integer types in their standard sizes, signed and unsigned.
- */
-
-typedef unsigned char bool;
 
 //
 // A color (BGR)

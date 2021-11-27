@@ -32,8 +32,8 @@ extern void call_user(long start, long stack, int argc, char * argv[]);
 void proc_exec(long start, long stack, int argc, char * argv[]) {
     TRACE("proc_exec");
 
-    log_num(LOG_INFO, "proc_exec start: ", start);
-    log_num(LOG_INFO, "proc_exec stack: ", stack);
+    logm_num(LOG_INFO, "proc_exec start: ", start);
+    logm_num(LOG_INFO, "proc_exec stack: ", stack);
 
     g_proc_result = 0;
     call_user(start, stack, argc, argv);
@@ -85,11 +85,11 @@ short proc_run(const char * path, int argc, char * argv[]) {
         if (start != 0) {
             proc_exec(start, k_default_stack, argc, argv);
         } else {
-            log_num(LOG_ERROR, "Couldn't execute file: ", result);
+            logm_num(LOG_ERROR, "Couldn't execute file: ", result);
             return ERR_NOT_EXECUTABLE;
         }
     } else {
-        log_num(LOG_ERROR, "Couldn't load file: ", result);
+        logm_num(LOG_ERROR, "Couldn't load file: ", result);
         return result;
     }
 }

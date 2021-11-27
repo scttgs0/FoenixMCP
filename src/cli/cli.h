@@ -26,13 +26,15 @@ typedef int (*cli_cmd_handler)(short screen, int argc, char * argv[]);
  */
 extern short cli_init();
 
+extern void cli_rerepl(void);
+
 /**
  * Enter the CLI's read-eval-print loop
  *
  * Inputs:
  * channel = the console channel to use for I/O
  */
-extern short cli_repl(short channel);
+extern void cli_repl(short channel);
 
 /*
  * Evaluate an argument to a number

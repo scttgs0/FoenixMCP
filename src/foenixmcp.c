@@ -186,15 +186,15 @@ void initialize() {
     sid_init_all();
 
     cdev_init_system();   // Initialize the channel device system
-    log(LOG_INFO, "Channel device system ready.");
+    logm(LOG_INFO, "Channel device system ready.");
 
     bdev_init_system();   // Initialize the channel device system
-    log(LOG_INFO, "Block device system ready.");
+    logm(LOG_INFO, "Block device system ready.");
 
     if (res = con_install()) {
-        log_num(LOG_ERROR, "FAILED: Console installation", res);
+        logm_num(LOG_ERROR, "FAILED: Console installation", res);
     } else {
-        log(LOG_INFO, "Console installed.");
+        logm(LOG_INFO, "Console installed.");
     }
 
     /* Initialize the timers the MCP uses */
@@ -212,15 +212,15 @@ void initialize() {
     load_splashscreen();
 
     if (res = pata_install()) {
-        log_num(LOG_ERROR, "FAILED: PATA driver installation", res);
+        logm_num(LOG_ERROR, "FAILED: PATA driver installation", res);
     } else {
-        log(LOG_INFO, "PATA driver installed.");
+        logm(LOG_INFO, "PATA driver installed.");
     }
 
     if (res = sdc_install()) {
-        log_num(LOG_ERROR, "FAILED: SDC driver installation", res);
+        logm_num(LOG_ERROR, "FAILED: SDC driver installation", res);
     } else {
-        log(LOG_INFO, "SDC driver installed.");
+        logm(LOG_INFO, "SDC driver installed.");
     }
 
     // At this point, we should be able to call into to console to print to the screens
@@ -233,22 +233,22 @@ void initialize() {
 
 #if MODEL == MODEL_FOENIX_A2560K
     if (res = kbdmo_init()) {
-        log_num(LOG_ERROR, "FAILED: A2560K built-in keyboard initialization", res);
+        logm_num(LOG_ERROR, "FAILED: A2560K built-in keyboard initialization", res);
     } else {
-        log(LOG_INFO, "A2560K built-in keyboard initialized.");
+        logm(LOG_INFO, "A2560K built-in keyboard initialized.");
     }
 #endif
 
     if (res = cli_init()) {
-        log_num(LOG_ERROR, "FAILED: CLI initialization", res);
+        logm_num(LOG_ERROR, "FAILED: CLI initialization", res);
     } else {
-        log(LOG_INFO, "CLI initialized.");
+        logm(LOG_INFO, "CLI initialized.");
     }
 
     if (res = fsys_init()) {
-        log_num(LOG_ERROR, "FAILED: file system initialization", res);
+        logm_num(LOG_ERROR, "FAILED: file system initialization", res);
     } else {
-        log(LOG_INFO, "File system initialized.");
+        logm(LOG_INFO, "File system initialized.");
     }
 
     /* Wait until the target duration has been reached _or_ the user presses a key */
@@ -307,13 +307,13 @@ int main(int argc, char * argv[]) {
 // #if MODEL == MODEL_FOENIX_A2560K
 //     fdc_init();
 //     if (fdc_ioctrl(FDC_CTRL_MOTOR_ON, 0, 0)) {
-//         log(LOG_ERROR, "Could not turn on the floppy drive motor.");
+//         logm(LOG_ERROR, "Could not turn on the floppy drive motor.");
 //     }
 // #endif
 
     cli_repl(0);
 
-    log(LOG_INFO, "Stopping.");
+    logm(LOG_INFO, "Stopping.");
 
     /* Infinite loop... */
     while (1) {};

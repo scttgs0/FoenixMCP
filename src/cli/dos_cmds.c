@@ -34,7 +34,7 @@ short cmd_diskread(short screen, int argc, char * argv[]) {
     bdev_number = (short)cli_eval_number(argv[1]);
     lba = cli_eval_number(argv[2]);
 
-    sprintf(buffer, "Reading drive #%d, sector 0x%X\n", bdev_number, lba);
+    sprintf(buffer, "Reading drive #%hd, sector 0x%lX\n", bdev_number, lba);
     print(screen, buffer);
 
     result = bdev_read(bdev_number, lba, buffer, 512);
@@ -70,7 +70,7 @@ short cmd_diskfill(short screen, int argc, char * argv[]) {
     lba = cli_eval_number(argv[2]);
     value = (unsigned char)cli_eval_number(argv[3]);
 
-    sprintf(buffer, "Filling drive #%d, sector 0x%X with 0x%02X\n", bdev_number, lba, value);
+    sprintf(buffer, "Filling drive #%hd, sector 0x%lX with 0x%02uX\n", bdev_number, lba, value);
     print(screen, buffer);
 
     for (i = 0; i < 512; i++) {
@@ -346,17 +346,17 @@ short cmd_type(short screen, int argc, char * argv[]) {
     if (argc > 1) {
         unsigned char buffer[128];
 
-        log3(LOG_INFO, "Attempting to type [", argv[1], "]");
+        logm3(LOG_INFO, "Attempting to type [", argv[1], "]");
         short fd = fsys_open(argv[1], FA_READ);
         if (fd >= 0) {
-            log_num(LOG_INFO, "File open: ", fd);
+            logm_num(LOG_INFO, "File open: ", fd);
             while (1) {
                 short n = chan_read(fd, buffer, 128);
-                log_num(LOG_INFO, "cmd_type chan_read: ", n);
+                logm_num(LOG_INFO, "cmd_type chan_read: ", n);
                 if (n > 0) {
-                    log(LOG_INFO, "cmd_type chan_write: ");
+                    logm(LOG_INFO, "cmd_type chan_write: ");
                     chan_write(screen, buffer, n);
-                    log(LOG_INFO, "/cmd_type chan_write: ");
+                    logm(LOG_INFO, "/cmd_type chan_write: ");
                 } else {
                     break;
                 }
@@ -370,7 +370,7 @@ short cmd_type(short screen, int argc, char * argv[]) {
             return fd;
         }
     } else {
-        log(LOG_ERROR, "Usage: TYPE <path>");
+        logm(LOG_ERROR, "Usage: TYPE <path>");
         return -1;
     }
 }
@@ -391,9 +391,9 @@ short cmd_load(short screen, int argc, char * argv[]) {
         short result = fsys_load(argv[1], destination, &start);
         if (result == 0) {
             if (start != 0) {
-                log(LOG_INFO, "Loaded file with a start adddress.");
+                logm(LOG_INFO, "Loaded file with a start adddress.");
             } else {
-                log(LOG_INFO, "File loaded.");
+                logm(LOG_INFO, "File loaded.");
             }
         } else {
             err_print(screen, "Unable to open file", result);
@@ -402,7 +402,7 @@ short cmd_load(short screen, int argc, char * argv[]) {
 
         return result;
     } else {
-        log(LOG_ERROR, "Usage: LOAD <path> [<destination>]");
+        logm(LOG_ERROR, "Usage: LOAD <path> [<destination>]");
         return -1;
     }
 }

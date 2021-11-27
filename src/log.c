@@ -212,7 +212,7 @@ void log_setlevel(short level) {
  * level = the severity of the message... the logging level will filter messages displayed
  * message = the message to log
  */
-void log(short level, char * message) {
+void logm(short level, char * message) {
     if (level <= log_level) {
         print(log_channel, message);
         print_c(log_channel, '\n');
@@ -227,7 +227,7 @@ void log(short level, char * message) {
  * message1 = the first part of the message to log
  * message2 = the second part of the message to log
  */
-void log2(short level, char * message1, char * message2) {
+void logm2(short level, char * message1, char * message2) {
     if (level <= log_level) {
         print(log_channel, message1);
         print(log_channel, message2);
@@ -244,7 +244,7 @@ void log2(short level, char * message1, char * message2) {
  * message2 = the second part of the message to log
  * message3 = the third part of the message to log
  */
-void log3(short level, char * message1, char * message2, char * message3) {
+void logm3(short level, char * message1, char * message2, char * message3) {
     if (level <= log_level) {
         print(log_channel, message1);
         print(log_channel, message2);
@@ -261,7 +261,7 @@ void log3(short level, char * message1, char * message2, char * message3) {
  * message1 = the first part of the message to log
  * n = the number to log
  */
-void log_num(short level, char * message, int n) {
+void logm_num(short level, char * message, int n) {
     if (level <= log_level) {
         print(log_channel, message);
         print_hex_32(log_channel, n);
@@ -272,7 +272,7 @@ void log_num(short level, char * message, int n) {
 /*
  * Send a single character to the debugging channel
  */
-void log_c(short level, char c) {
+void logm_c(short level, char c) {
     if (log_level <= level) {
         print_c(log_channel, c);
     }

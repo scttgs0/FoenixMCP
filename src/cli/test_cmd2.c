@@ -3,6 +3,7 @@
  */
 
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "cli.h"
@@ -12,10 +13,12 @@
 #include "dev/channel.h"
 #include "dev/fsys.h"
 #include "dev/lpt.h"
+#include "dev/ps2.h"
 #include "dev/rtc.h"
 #include "dev/uart.h"
 #include "fatfs/ff.h"
 #include "interrupt.h"
+#include "log.h"
 #include "rtc_reg.h"
 #include "simpleio.h"
 #include "syscalls.h"
@@ -56,7 +59,7 @@ typedef struct s_cli_test_feature {
  * Tests...
  */
 
-short cli_test_bitmap(short channel, int argc, char * argv[]) {
+void cli_test_bitmap(short channel, int argc, char * argv[]) {
     int i,m,p;
     unsigned char j;
     unsigned short k;
@@ -123,14 +126,14 @@ short cli_test_rtc(short channel, int argc, char * argv[]) {
 
     ticks = sys_time_jiffies();
 
-    sprintf(buffer, "Waiting for updated ticks starting from %d\n", ticks);
+    sprintf(buffer, "Waiting for updated ticks starting from %li\n", ticks);
     sys_chan_write(channel, buffer, strlen(buffer));
 
     while (1) {
         if (ticks < sys_time_jiffies()) {
             /* We got the periodic interrupt */
 
-            sprintf(buffer, "Tick! %d\n", ticks);
+            sprintf(buffer, "Tick! %ld\n", ticks);
             sys_chan_write(channel, buffer, strlen(buffer));
 
             ticks = sys_time_jiffies();
@@ -158,27 +161,27 @@ short cli_mem_test(short channel, int argc, char * argv[]) {
     for (i = mem_start; i < mem_end; i++) {
         memory[i] = 0x55;
         if (memory[i] != 0x55) {
-            sprintf(message, "\x1B[1;2H\x1B[KFailed to write 0x55... read %02X at %08X\n\n", memory[i], i);
+            sprintf(message, "\x1B[1;2H\x1B[KFailed to write 0x55... read %02X at %08lX\n\n", memory[i], i);
             sys_chan_write(channel, message, strlen(message));
             return -1;
         }
 
         memory[i] = 0xAA;
         if (memory[i] != 0xAA) {
-            sprintf(message, "\x1B[1;2H\x1B[KFailed to write 0xAA... read %02X at %08X\n\n", memory[i], i);
+            sprintf(message, "\x1B[1;2H\x1B[KFailed to write 0xAA... read %02X at %08lX\n\n", memory[i], i);
             sys_chan_write(channel, message, strlen(message));
             return -1;
         }
 
         memory[i] = 0x00;
         if (memory[i] != 0x00) {
-            sprintf(message, "\x1B[1;2H\x1B[KFailed to write 0x00... read %02X at %08\n\nX", memory[i], i);
+            sprintf(message, "\x1B[1;2H\x1B[KFailed to write 0x00... read %02X at %08lX\n\n", memory[i], i);
             sys_chan_write(channel, message, strlen(message));
             return -1;
         }
 
         if ((i % 1024) == 0) {
-            sprintf(message, "\x1B[H\x1B[0KMemory tested: %08X", i);
+            sprintf(message, "\x1B[H\x1B[0KMemory tested: %08lX", i);
             sys_chan_write(channel, message, strlen(message));
         }
     }

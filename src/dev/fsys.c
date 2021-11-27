@@ -100,7 +100,7 @@ short fsys_open(const char * path, short mode) {
     }
 
     if (fd < 0) {
-        log(LOG_ERROR, "fsys_open out of handles");
+        logm(LOG_ERROR, "fsys_open out of handles");
         return ERR_OUT_OF_HANDLES;
     }
 
@@ -108,7 +108,7 @@ short fsys_open(const char * path, short mode) {
 
     chan = chan_alloc(CDEV_FILE);
     if (chan) {
-        log_num(LOG_INFO, "chan_alloc: ", chan->number);
+        logm_num(LOG_INFO, "chan_alloc: ", chan->number);
         chan->dev = CDEV_FILE;
         FRESULT result = f_open(&g_file[fd], path, mode);
         if (result == 0) {
@@ -116,7 +116,7 @@ short fsys_open(const char * path, short mode) {
             return chan->number;
         } else {
             /* There was an error... deallocate the channel and file descriptor */
-            log_num(LOG_ERROR, "fsys_open error: ", result);
+            logm_num(LOG_ERROR, "fsys_open error: ", result);
             g_fil_state[fd] = 0;
             chan_free(chan);
             return fatfs_to_foenix(result);
@@ -124,7 +124,7 @@ short fsys_open(const char * path, short mode) {
 
     } else {
         /* We couldn't allocate a channel... return our file descriptor */
-        log(LOG_ERROR, "fsys_open out of channels");
+        logm(LOG_ERROR, "fsys_open out of channels");
         g_fil_state[fd] = 0;
         return ERR_OUT_OF_HANDLES;
     }
@@ -373,10 +373,10 @@ short fsys_mkdir(const char * path) {
 
     result = f_mkdir(path);
     if (result == FR_OK) {
-        log_num(LOG_ERROR, "fsys_mkdir error: ", result);
+        logm_num(LOG_ERROR, "fsys_mkdir error: ", result);
         return 0;
     } else {
-        log_num(LOG_ERROR, "fsys_mkdir error: ", result);
+        logm_num(LOG_ERROR, "fsys_mkdir error: ", result);
         return fatfs_to_foenix(result);
     }
 }
@@ -397,7 +397,7 @@ short fsys_delete(const char * path) {
     if (result == FR_OK) {
         return 0;
     } else {
-        log_num(LOG_ERROR, "fsys_delete error: ", result);
+        logm_num(LOG_ERROR, "fsys_delete error: ", result);
         return fatfs_to_foenix(result);
     }
 }
@@ -439,7 +439,7 @@ short fsys_set_cwd(const char * path) {
     if (result == FR_OK) {
         return 0;
     } else {
-        log_num(LOG_ERROR, "fsys_set_cwd error: ", result);
+        logm_num(LOG_ERROR, "fsys_set_cwd error: ", result);
         return fatfs_to_foenix(result);
     }
 }
@@ -461,7 +461,7 @@ short fsys_get_cwd(char * path, short size) {
     if (result == FR_OK) {
         return 0;
     } else {
-        log_num(LOG_ERROR, "fsys_get_cwd error: ", result);
+        logm_num(LOG_ERROR, "fsys_get_cwd error: ", result);
         return fatfs_to_foenix(result);
     }
 }
@@ -493,7 +493,7 @@ short fchan_read(t_channel * chan, unsigned char * buffer, short size) {
     FRESULT result;
     int total_read;
 
-    log(LOG_TRACE, "fchan_read");
+    logm(LOG_TRACE, "fchan_read");
 
     file = fchan_to_file(chan);
     if (file) {
@@ -538,7 +538,7 @@ short fchan_read_b(t_channel * chan) {
     short total_read;
     char buffer[2];
 
-    log(LOG_TRACE, "fchan_read");
+    logm(LOG_TRACE, "fchan_read");
 
     file = fchan_to_file(chan);
     if (file) {
@@ -569,7 +569,7 @@ short fchan_write(p_channel chan, const unsigned char * buffer, short size) {
         if (result == FR_OK) {
             return (short)total_written;
         } else {
-            log_num(LOG_ERROR, "fchan_write error: ", result);
+            logm_num(LOG_ERROR, "fchan_write error: ", result);
             return fatfs_to_foenix(result);
         }
     }
@@ -742,7 +742,7 @@ short fsys_setlabel(short drive, char * label) {
     sprintf(buffer, "%d:%s", drive, label);
     fres = f_setlabel(buffer);
     if (fres != FR_OK) {
-        log_num(LOG_ERROR, "fsys_setlabel: ", fres);
+        logm_num(LOG_ERROR, "fsys_setlabel: ", fres);
         return fatfs_to_foenix(fres);
     } else {
         return 0;
@@ -765,7 +765,7 @@ short fsys_mkfs(short drive, char * label) {
     sprintf(buffer, "%d:", drive);
     fres = f_mkfs(buffer, 0, workspace, FF_MAX_SS * 4);
     if (fres != FR_OK) {
-        log_num(LOG_ERROR, "fsys_mkfs: ", fres);
+        logm_num(LOG_ERROR, "fsys_mkfs: ", fres);
         return fatfs_to_foenix(fres);
     } else {
         return 0;
@@ -792,7 +792,7 @@ short fsys_default_loader(short chan, long destination, long * start) {
     unsigned char * dest = (unsigned char *)destination;
 
     TRACE("fsys_default_loader");
-    log_num(LOG_DEBUG, "Channel: ", chan);
+    logm_num(LOG_DEBUG, "Channel: ", chan);
 
     /* The default loader cannot be used to load executable files, so clear the start address */
     *start = 0;
@@ -925,11 +925,11 @@ short fsys_pgz_loader(short chan, long destination, long * start) {
                                     break;
                                 case 2:
                                     address = address | chunk[i] << 16;
-                                    log_num(LOG_INFO, "PGZ 24-bit address: ", address);
+                                    logm_num(LOG_INFO, "PGZ 24-bit address: ", address);
                                     break;
                                 case 3:
                                     address = address | chunk[i] << 24;
-                                    log_num(LOG_INFO, "PGZ 32-bit address: ", address);
+                                    logm_num(LOG_INFO, "PGZ 32-bit address: ", address);
                                     break;
                             }
 
@@ -948,14 +948,14 @@ short fsys_pgz_loader(short chan, long destination, long * start) {
                                     if (!use_32bits && count == 0) {
                                         *start = address;
                                     }
-                                    log_num(LOG_INFO, "PGZ 24-bit count: ", count);
+                                    logm_num(LOG_INFO, "PGZ 24-bit count: ", count);
                                     break;
                                 case 3:
                                     count = count | chunk[i] << 24;
                                     if (use_32bits && count == 0) {
                                         *start = address;
                                     }
-                                    log_num(LOG_INFO, "PGZ 32-bit count: ", count);
+                                    logm_num(LOG_INFO, "PGZ 32-bit count: ", count);
                                     break;
                             }
                         } else {
@@ -1184,7 +1184,7 @@ short fsys_load(const char * path, long destination, long * start) {
         }
     }
 
-    log2(LOG_VERBOSE, "fsys_load ext: ", extension);
+    logm2(LOG_VERBOSE, "fsys_load ext: ", extension);
 
     if (extension[0] == 0) {
         if (destination != 0) {
@@ -1203,7 +1203,7 @@ short fsys_load(const char * path, long destination, long * start) {
             if (strcmp(g_file_loader[i].extension, extension) == 0) {
                 /* If the extensions match, pass back the loader */
                 loader = g_file_loader[i].loader;
-                log2(LOG_DEBUG, "loader found: ", g_file_loader[i].extension);
+                logm2(LOG_DEBUG, "loader found: ", g_file_loader[i].extension);
             }
         }
     }
@@ -1213,11 +1213,11 @@ short fsys_load(const char * path, long destination, long * start) {
     if (loader == 0) {
         if (destination != 0) {
             /* If a destination was specified, just load it into memory without interpretation */
-            log(LOG_DEBUG, "Setting default loader.");
+            logm(LOG_DEBUG, "Setting default loader.");
             loader = fsys_default_loader;
 
         } else {
-            log(LOG_DEBUG, "Returning a bad extension.");
+            logm(LOG_DEBUG, "Returning a bad extension.");
             /* Return bad extension */
             return ERR_BAD_EXTENSION;
         }
@@ -1237,13 +1237,13 @@ short fsys_load(const char * path, long destination, long * start) {
         fsys_close(chan);
 
         if (result != 0) {
-            log_num(LOG_ERROR, "Could not load file: ", result);
+            logm_num(LOG_ERROR, "Could not load file: ", result);
         }
 
         return result;
     } else {
         /* File open returned an error... pass it along */
-        log_num(LOG_ERROR, "Could not open file: ", chan);
+        logm_num(LOG_ERROR, "Could not open file: ", chan);
         return chan;
     }
 }

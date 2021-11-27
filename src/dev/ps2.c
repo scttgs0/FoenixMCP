@@ -335,7 +335,7 @@ const char g_us_sc_alt_shift[] = {
 short ps2_wait_out() {
     long target_ticks;
 
-    log(LOG_TRACE, "ps2_wait_out");
+    logm(LOG_TRACE, "ps2_wait_out");
 
     target_ticks = rtc_get_jiffies() + PS2_TIMEOUT_JF;
     while ((*PS2_STATUS & PS2_STAT_OBF) == 0) {
@@ -356,7 +356,7 @@ short ps2_wait_out() {
 short ps2_wait_in() {
     long target_ticks;
 
-    log(LOG_TRACE, "ps2_wait_in");
+    logm(LOG_TRACE, "ps2_wait_in");
 
     target_ticks = rtc_get_jiffies() + PS2_TIMEOUT_JF;
     while ((*PS2_STATUS & PS2_STAT_IBF) != 0) {
@@ -902,7 +902,7 @@ short ps2_mouse_command(unsigned char cmd) {
     if (ps2_wait_in()) return -1;
     *PS2_CMD_BUF = MOUSE_CMD_PREFIX;
 
-    // log_num(LOG_VERBOSE, "ps_mouse_command command: ", cmd);
+    // logm_num(LOG_VERBOSE, "ps_mouse_command command: ", cmd);
 
     if (ps2_wait_in()) return -1;
     *PS2_DATA_BUF = cmd;
@@ -910,7 +910,7 @@ short ps2_mouse_command(unsigned char cmd) {
     if (ps2_wait_out()) return -1;
     result = *PS2_DATA_BUF;
 
-    // log_num(LOG_VERBOSE, "ps_mouse_command result: ", result);
+    // logm_num(LOG_VERBOSE, "ps_mouse_command result: ", result);
 
     return (short)result;
 }
@@ -941,7 +941,7 @@ short ps2_mouse_get_packet() {
 
     result = ps2_mouse_command(MOUSE_CMD_REQPACK);
     if (result == -1) {
-        log_num(LOG_INFO, "MOUSE_CMD_REQPACK: ", result);
+        logm_num(LOG_INFO, "MOUSE_CMD_REQPACK: ", result);
         return result;
     }
 
@@ -1001,7 +1001,7 @@ short mouse_init() {
 
     result = ps2_mouse_command(MOUSE_CMD_RESET);
     if (result == -1) {
-        log_num(LOG_INFO, "MOUSE_CMD_RESET: ", result);
+        logm_num(LOG_INFO, "MOUSE_CMD_RESET: ", result);
         return result;
     }
 
@@ -1009,7 +1009,7 @@ short mouse_init() {
 
     result = ps2_mouse_command_repeatable(MOUSE_CMD_DISABLE);
     if (result != PS2_RESP_ACK) {
-        log_num(LOG_INFO, "MOUSE_CMD_DISABLE: ", result);
+        logm_num(LOG_INFO, "MOUSE_CMD_DISABLE: ", result);
         return result;
     }
 
@@ -1017,7 +1017,7 @@ short mouse_init() {
 
     result = ps2_mouse_command_repeatable(MOUSE_CMD_DEFAULTS);
     if (result != PS2_RESP_ACK) {
-        log_num(LOG_INFO, "MOUSE_CMD_DEFAULTS: ", result);
+        logm_num(LOG_INFO, "MOUSE_CMD_DEFAULTS: ", result);
         return result;
     }
 
@@ -1025,13 +1025,13 @@ short mouse_init() {
 
     result = ps2_mouse_command_repeatable(MOUSE_CMD_SETRES);
     if (result != PS2_RESP_ACK) {
-        log_num(LOG_INFO, "MOUSE_CMD_SETRES: ", result);
+        logm_num(LOG_INFO, "MOUSE_CMD_SETRES: ", result);
         return result;
     }
 
     result = ps2_mouse_command_repeatable(0x00);
     if (result != PS2_RESP_ACK) {
-        log_num(LOG_INFO, "MOUSE_CMD_SETRES resolution: ", result);
+        logm_num(LOG_INFO, "MOUSE_CMD_SETRES resolution: ", result);
         return result;
     }
 
@@ -1039,7 +1039,7 @@ short mouse_init() {
 
     result = ps2_mouse_command_repeatable(MOUSE_CMD_ENABLE);
     if (result != PS2_RESP_ACK) {
-        log_num(LOG_INFO, "MOUSE_CMD_ENABLE: ", result);
+        logm_num(LOG_INFO, "MOUSE_CMD_ENABLE: ", result);
         return result;
     }
 
@@ -1216,7 +1216,7 @@ short ps2_init() {
     if (mouse_present) {
         /* Initialize the mouse */
         if (mouse_error = mouse_init()) {
-            log_num(LOG_INFO, "Unable to initialize mouse", res);
+            logm_num(LOG_INFO, "Unable to initialize mouse", res);
         }
     }
 
@@ -1236,7 +1236,7 @@ short ps2_init() {
     int_enable(INT_KBD_PS2);
 
     if (mouse_present && (mouse_error == 0)) {
-        log(LOG_TRACE, "mouse enabled");
+        logm(LOG_TRACE, "mouse enabled");
 
         // Register the interrupt handler for the mouse
         int_register(INT_MOUSE, mouse_handle_irq);

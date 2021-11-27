@@ -3,7 +3,9 @@
  */
 
 #include <ctype.h>
+#include <stdio.h>
 #include <string.h>
+
 #include "log.h"
 #include "types.h"
 #include "interrupt.h"
@@ -102,7 +104,7 @@ int cmd_help(short channel, int argc, char * argv[]) {
 short cmd_getjiffies(short channel, int argc, char * argv[]) {
     char buffer[80];
 
-    sprintf(buffer, "%d\n", timers_jiffies());
+    sprintf(buffer, "%li\n", timers_jiffies());
     sys_chan_write(channel, buffer, strlen(buffer));;
     return 0;
 }
@@ -113,7 +115,7 @@ short cmd_getjiffies(short channel, int argc, char * argv[]) {
 short cmd_get_ticks(short channel, int argc, char * argv[]) {
     char buffer[80];
 
-    sprintf(buffer, "%d\n", rtc_get_jiffies());
+    sprintf(buffer, "%li\n", rtc_get_jiffies());
     sys_chan_write(channel, buffer, strlen(buffer));
     return 0;
 }
@@ -143,22 +145,22 @@ short cmd_sysinfo(short channel, int argc, char * argv[]) {
     sprintf(buffer, "\nCPU: %s", info.cpu_name);
     sys_chan_write(channel, buffer, strlen(buffer));
 
-    sprintf(buffer, "\nSystem Memory: 0x%X", info.system_ram_size);
+    sprintf(buffer, "\nSystem Memory: 0x%lX", info.system_ram_size);
     sys_chan_write(channel, buffer, strlen(buffer));
 
     sprintf(buffer, "\nPCB version: %s", &info.pcb_version);
     sys_chan_write(channel, buffer, strlen(buffer));
 
-    sprintf(buffer, "\nFPGA Date: %08X", info.fpga_date);
+    sprintf(buffer, "\nFPGA Date: %08lX", info.fpga_date);
     sys_chan_write(channel, buffer, strlen(buffer));
 
-    sprintf(buffer, "\nFPGA Model: %08X", info.fpga_model);
+    sprintf(buffer, "\nFPGA Model: %08lX", info.fpga_model);
     sys_chan_write(channel, buffer, strlen(buffer));
 
     sprintf(buffer, "\nFPGA Version: %04X.%04X", info.fpga_version, info.fpga_subver);
     sys_chan_write(channel, buffer, strlen(buffer));
 
-    sprintf(buffer, "\nMCP version: v%02d.%02d.%04d\n", info.mcp_version, info.mcp_rev, info.mcp_build);
+    sprintf(buffer, "\nMCP version: v%02u.%02u.%04u\n", info.mcp_version, info.mcp_rev, info.mcp_build);
     sys_chan_write(channel, buffer, strlen(buffer));
 
     return 0;
@@ -201,8 +203,8 @@ short cli_exec(short channel, char * command, int argc, char * argv[]) {
     const char * cmd_not_found = "Command not found.\n";
     p_cli_command commands = g_cli_commands;
 
-    log3(LOG_INFO, "cli_exec: '", argv[0], "'");
-    log_num(LOG_INFO, "argc = ", argc);
+    logm3(LOG_INFO, "cli_exec: '", argv[0], "'");
+    logm_num(LOG_INFO, "argc = ", argc);
 
     while ((commands != 0) && (commands->name != 0)) {
         // Does the command match the name?
@@ -249,7 +251,7 @@ char * strtok_r(char * source, const char * delimiter, char ** saveptr) {
     return x;
 }
 
-short cli_rerepl() {
+void cli_rerepl() {
     while (1) {
         cli_repl(g_current_channel);
     }
@@ -258,7 +260,7 @@ short cli_rerepl() {
 //
 // Enter the CLI's read-eval-print loop
 //
-short cli_repl(short channel) {
+void cli_repl(short channel) {
     char command_line[MAX_COMMAND_SIZE];
     char cwd_buffer[MAX_PATH_LEN];
     char * arg;
@@ -297,8 +299,6 @@ short cli_repl(short channel) {
             cli_exec(channel, argv[0], argc, argv);
         }
     }
-
-    return 0;
 }
 
 long cli_eval_dec(const char * arg) {

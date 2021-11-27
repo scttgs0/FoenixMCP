@@ -463,7 +463,7 @@ short cli_volume_set(short channel, char * value) {
  * Volume getter -- GET VOLUME
  */
 short cli_volume_get(short channel, char * value) {
-    sprintf(value, "%d", codec_get_volume());
+    sprintf(value, "%uc", codec_get_volume());
     return 0;
 }
 

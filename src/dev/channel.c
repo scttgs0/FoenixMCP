@@ -119,7 +119,7 @@ p_channel chan_get_record(short c) {
 // chan = a pointer to the channel record to return to the kernel
 //
 void chan_free(p_channel chan) {
-    log_num(LOG_INFO, "chan_free: ", chan->number);
+    logm_num(LOG_INFO, "chan_free: ", chan->number);
 
     chan->number = -1;
     chan->dev = -1;
@@ -144,12 +144,12 @@ short chan_get_records(short channel, p_channel * chan, p_dev_chan * cdev) {
                 *cdev = &g_channel_devs[(*chan)->dev];
                 return 0;
             } else {
-                log_num(LOG_ERROR, "chan_get_records 1: ", (*chan)->dev);
+                logm_num(LOG_ERROR, "chan_get_records 1: ", (*chan)->dev);
                 return DEV_ERR_BADDEV;
             }
 
         } else {
-            log_num(LOG_ERROR, "chan_get_records 2: ", channel);
+            logm_num(LOG_ERROR, "chan_get_records 2: ", channel);
             return DEV_ERR_BADDEV;
         }
 
@@ -195,7 +195,7 @@ short chan_open(short dev, uint8_t * path, short mode) {
     p_dev_chan cdev;
 
     TRACE("chan_open");
-    log_num(LOG_DEBUG, "dev = ", dev);
+    logm_num(LOG_DEBUG, "dev = ", dev);
 
     if (dev < CDEV_DEVICES_MAX) {
         /* Get the device record */
@@ -260,14 +260,14 @@ short chan_read(short channel, uint8_t * buffer, short size) {
     p_dev_chan cdev;
     short res;
 
-    log(LOG_TRACE, "chan_read");
+    logm(LOG_TRACE, "chan_read");
 
     res = chan_get_records(channel, &chan, &cdev);
     if (res == 0) {
-        log2(LOG_DEBUG, "chan_read: ", cdev->name);
+        logm2(LOG_DEBUG, "chan_read: ", cdev->name);
         return cdev->read(chan, buffer, size);
     } else {
-        log_num(LOG_DEBUG, "Couldn't get channel: ", res);
+        logm_num(LOG_DEBUG, "Couldn't get channel: ", res);
         return res;
     }
 }
@@ -335,13 +335,13 @@ short chan_write(short channel, const uint8_t * buffer, short size) {
     p_dev_chan cdev;
     short res;
 
-    log_num(LOG_INFO, "chan_write: ", channel);
+    logm_num(LOG_INFO, "chan_write: ", channel);
 
     res = chan_get_records(channel, &chan, &cdev);
     if (res == 0) {
         return cdev->write(chan, buffer, size);
     } else {
-        log_num(LOG_ERROR, "chan_write error: ", res);
+        logm_num(LOG_ERROR, "chan_write error: ", res);
         while (1) ;
         return res;
     }

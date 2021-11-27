@@ -230,17 +230,17 @@ short fdc_can_write() {
 short fdc_motor_on() {
     TRACE("fdc_motor_on");
 
-    log_num(LOG_TRACE, "FDC_DOR: ", *FDC_DOR);
+    logm_num(LOG_TRACE, "FDC_DOR: ", *FDC_DOR);
 
     // if ((*FDC_DOR & FDC_DOR_MOT0) != FDC_DOR_MOT0) {
     //     /* Motor is not on... turn it on without DMA or RESET */
         *FDC_DOR = FDC_DOR_MOT0 | FDC_DOR_NRESET;
 
-        log_num(LOG_TRACE, "FDC_DOR 2: ", *FDC_DOR);
+        logm_num(LOG_TRACE, "FDC_DOR 2: ", *FDC_DOR);
 
         if (fdc_check_rqm()) {
             /* Got a timeout after trying to turn on the motor */
-            log(LOG_ERROR, "fdc_motor_on timeout");
+            logm(LOG_ERROR, "fdc_motor_on timeout");
             return -1;
         }
 
@@ -297,13 +297,13 @@ short fdc_sense_interrupt_status(unsigned char *st0, unsigned char *pcn) {
 
     if (fdc_wait_cmd_busy() < 0) {
         /* Timed out waiting for the FDC to be free */
-        log(LOG_ERROR, "fdc_wait_cmd_busy: timeout");
+        logm(LOG_ERROR, "fdc_wait_cmd_busy: timeout");
         return -1;
     }
 
     if (fdc_check_rqm() < 0) {
         /* Timed out waiting for permission to write a command byte */
-        log(LOG_ERROR, "fdc_check_rqm 1: timeout");
+        logm(LOG_ERROR, "fdc_check_rqm 1: timeout");
         return -1;
     }
 
@@ -312,7 +312,7 @@ short fdc_sense_interrupt_status(unsigned char *st0, unsigned char *pcn) {
 
     if (fdc_can_read_data() < 0) {
         /* Timed out waiting to receive data */
-        log(LOG_ERROR, "fdc_can_read_data: timeout");
+        logm(LOG_ERROR, "fdc_can_read_data: timeout");
         return -1;
     }
 
@@ -321,7 +321,7 @@ short fdc_sense_interrupt_status(unsigned char *st0, unsigned char *pcn) {
 
     if (fdc_check_rqm() < 0) {
         /* Timed out waiting for permission to transfer another byte */
-        log(LOG_ERROR, "fdc_check_rqm 2: timeout");
+        logm(LOG_ERROR, "fdc_check_rqm 2: timeout");
         return -1;
     }
 
@@ -439,13 +439,13 @@ short fdc_version(unsigned char *version) {
 
     if (fdc_wait_cmd_busy() < 0) {
         /* Timed out waiting for the FDC to be free */
-        log(LOG_ERROR, "fdc_version fdc_wait_cmd_busy timed out");
+        logm(LOG_ERROR, "fdc_version fdc_wait_cmd_busy timed out");
         return -1;
     }
 
     if (fdc_check_rqm() < 0) {
         /* Timed out waiting for permission to write a command byte */
-        log(LOG_ERROR, "fdc_version fdc_check_rqm 1 timed out");
+        logm(LOG_ERROR, "fdc_version fdc_check_rqm 1 timed out");
         return -1;
     }
 
@@ -454,7 +454,7 @@ short fdc_version(unsigned char *version) {
 
     if (fdc_check_rqm() < 0) {
         /* Timed out waiting for permission to transfer another byte */
-        log(LOG_ERROR, "fdc_version fdc_check_rqm 2 timed out");
+        logm(LOG_ERROR, "fdc_version fdc_check_rqm 2 timed out");
         return -1;
     }
 
@@ -493,12 +493,12 @@ short fdc_reset() {
         pcn = 0;
         if (fdc_sense_interrupt_status(&st0, &pcn) < 0) {
             /* Timeout on sense interrupt */
-            log(LOG_ERROR, "fdc_sense_interrupt_status timeout");
+            logm(LOG_ERROR, "fdc_sense_interrupt_status timeout");
             return -1;
         }
 
-        log_num(LOG_INFO, "ST0: ", st0);
-        log_num(LOG_INFO, "PCN: ", pcn);
+        logm_num(LOG_INFO, "ST0: ", st0);
+        logm_num(LOG_INFO, "PCN: ", pcn);
 
         if (st0 = 0xC0) {
             break;
@@ -508,14 +508,14 @@ short fdc_reset() {
     /* Configure the FDC */
     if (fdc_configure() < 0) {
         /* Timeout on sense interrupt */
-        log(LOG_ERROR, "fdc_configure timeout");
+        logm(LOG_ERROR, "fdc_configure timeout");
         return -1;
     }
 
     /* Specify seek and head times, and turn off DMA */
     if (fdc_specify() < 0) {
         /* Timeout on sense interrupt */
-        log(LOG_ERROR, "fdc_specify timeout");
+        logm(LOG_ERROR, "fdc_specify timeout");
         return -1;
     }
 
@@ -543,14 +543,14 @@ short fdc_init() {
     unsigned char version;
 
     if (fdc_version(&version) < 0) {
-        log(LOG_ERROR, "Unable to get FDC version");
+        logm(LOG_ERROR, "Unable to get FDC version");
         return -1;
     }
 
-    log_num(LOG_INFO, "FDC version: ", version);
+    logm_num(LOG_INFO, "FDC version: ", version);
 
     if (fdc_reset() < 0) {
-        log(LOG_ERROR, "Unable to reset the FDC");
+        logm(LOG_ERROR, "Unable to reset the FDC");
         return -1;
     }
 

@@ -51,7 +51,7 @@ extern void log_setlevel(short level);
  * level = the severity of the message... the logging level will filter messages displayed
  * message = the message to log
  */
-extern void log(short level, char * message);
+extern void logm(short level, char * message);
 
 /*
  * Log a message to the console
@@ -61,7 +61,7 @@ extern void log(short level, char * message);
  * message1 = the first part of the message to log
  * message2 = the second part of the message to log
  */
-extern void log2(short level, char * message1, char * message2);
+extern void logm2(short level, char * message1, char * message2);
 
 /*
  * Log a message to the console
@@ -72,7 +72,7 @@ extern void log2(short level, char * message1, char * message2);
  * message2 = the second part of the message to log
  * message3 = the third part of the message to log
  */
-extern void log3(short level, char * message1, char * message2, char * message3);
+extern void logm3(short level, char * message1, char * message2, char * message3);
 
 /*
  * Log a message with a number
@@ -82,18 +82,18 @@ extern void log3(short level, char * message1, char * message2, char * message3)
  * message1 = the first part of the message to log
  * n = the number to log
  */
-extern void log_num(short level, char * message, int n);
+extern void logm_num(short level, char * message, int n);
 
 /*
  * Log a single character
  */
-extern void log_c(short log_level, char c);
+extern void logm_c(short log_level, char c);
 
 /*
  * Send a message to the debugging channel
  */
-#define DEBUG(m)    log(LOG_DEBUG, m);
-#define TRACE(m)    log(LOG_TRACE, m);
-#define TRACEC(c)   log_c(LOG_TRACE, c);
+#define DEBUG(m)    logm(LOG_DEBUG, m);
+#define TRACE(m)    logm(LOG_TRACE, m);
+#define TRACEC(c)   logm_c(LOG_TRACE, c);
 
 #endif
